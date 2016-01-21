@@ -1,3 +1,10 @@
 mvn clean install
-mvn package // Compile package
-java -cp target\uploader-1.0-SNAPSHOT.jar capstone.App // Run app
+mvn compile exec:java
+
+## For committing
+
+```
+git add .
+git commit -m "[COMMIT MESSAGE]"
+git push
+```

@@ -2,6 +2,11 @@ package capstone;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
 
 /**
  * Hello world!
@@ -11,6 +16,11 @@ public class App
 {
     public static void main( String[] args )
     {
+		AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+
+        DynamoDB dynamoDB = new DynamoDB(client);
+
+        Table table = dynamoDB.getTable("pad-test");
  
         String hostName = "localhost";
         int portNumber = 7474;
@@ -21,7 +31,24 @@ public class App
                 new BufferedReader(
                     new InputStreamReader(echoSocket.getInputStream()));
             while (true) {
-                System.out.println(in.readLine());
+                String read = in.readLine();
+				String[] temp = read.split(",");
+				
+				String P = temp[1].trim();
+				String A = temp[2].trim();
+				
+				try {
+					table.putItem(new Item()
+					.withPrimaryKey("session", "test", "timestamp", (new Date()).toString())
+					.withString("P", P)
+					.withString("A", A));
+					System.out.println("PutItem succeeded: " + read);
+
+				} catch (Exception e) {
+					System.err.println("Unable to add movie: " + read);
+					System.err.println(e.getMessage());
+					break;
+				}
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
