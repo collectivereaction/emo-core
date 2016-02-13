@@ -21,11 +21,13 @@ public class App
         DynamoDB dynamoDB = new DynamoDB(client);
 
         Table table = dynamoDB.getTable("pad-test");
-		Table gameTable = dynamoDB.getTable("game-test");
+		//Table gameTable = dynamoDB.getTable("game-test");
 		
         String hostName = "localhost";
         int portNumber = 7474;
-		int gamePortNumber = 7777;
+		//int gamePortNumber = 7777;
+		
+		(new Thread(new ServerThread())).start();
 		
 		try {
 			//PAD socket
@@ -34,9 +36,9 @@ public class App
                 new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 			
 			//Game socket
-			Socket gameEchoSocket = new Socket(hostName, gamePortNumber);
-            BufferedReader gameIn =
-                new BufferedReader(new InputStreamReader(gameEchoSocket.getInputStream()));
+			//Socket gameEchoSocket = new Socket(hostName, gamePortNumber);
+            //BufferedReader gameIn =
+            //    new BufferedReader(new InputStreamReader(gameEchoSocket.getInputStream()));
             while (true) {
                 String read = in.readLine();
 				String[] temp = read.split(",");
@@ -44,12 +46,12 @@ public class App
 				String P = temp[1].trim();
 				String A = temp[2].trim();
 				
-				String gameRead = gameIn.readLine();
+				//String gameRead = gameIn.readLine();
 				
-				String[] gameTemp = gameRead.split(",");
+				//String[] gameTemp = gameRead.split(",");
 
-				String gameTimeStamp = temp[0].trim();
-				String gameEvent = temp[1].trim();
+				//String gameTimeStamp = temp[0].trim();
+				//String gameEvent = temp[1].trim();
 				
 				try {
 					table.putItem(new Item()
@@ -58,10 +60,10 @@ public class App
 					.withString("A", A));
 					System.out.println("PutItem succeeded: " + read);
 					
-					gameTable.putItem(new Item()
-					.withPrimaryKey("session", "jake-pruitt", "timestamp", gameTimeStamp)
-					.withString("gameCode", gameEvent));
-					System.out.println("PutItem succeeded: " + gameRead);
+					//gameTable.putItem(new Item()
+					//.withPrimaryKey("session", "jake-pruitt", "timestamp", gameTimeStamp)
+					//.withString("gameCode", gameEvent));
+					//System.out.println("PutItem succeeded: " + gameRead);
 
 				} catch (Exception e) {
 					System.err.println("Unable to add: " + read);

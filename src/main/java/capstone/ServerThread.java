@@ -14,7 +14,7 @@ public class ServerThread implements Runnable {
 
         DynamoDB dynamoDB = new DynamoDB(client);
 
-        Table table = dynamoDB.getTable("pad-test");
+        //Table table = dynamoDB.getTable("pad-test");
 		Table gameTable = dynamoDB.getTable("game-test");
 
         try {
@@ -22,24 +22,25 @@ public class ServerThread implements Runnable {
             Socket clientSocket = serverSocket.accept();
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
-
+			System.out.println("Made it here 1");
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
+				System.out.println("Made it here 2");
 				String[] gameTemp = inputLine.split(",");
 
 				String gameTimeStamp = gameTemp[0].trim();
 				String gameEvent = gameTemp[1].trim();
-
-                try {
-					gameTable.putItem(new Item()
-					.withPrimaryKey("session", "jake-pruitt", "timestamp", gameTimeStamp)
-					.withString("gameCode", gameEvent));
-					System.out.println("PutItem succeeded: " + inputLine);
-                } catch (Exception e) {
-					System.err.println("Unable to add: " + inputLine);
-					System.err.println(e.getMessage());
-                    break;
-                }
+				System.out.println("PutItem succeeded: " + inputLine);
+                //try {
+				//	gameTable.putItem(new Item()
+				//	.withPrimaryKey("session", "jake-pruitt", "timestamp", gameTimeStamp)
+				//	.withString("gameCode", gameEvent));
+				//	System.out.println("PutItem succeeded: " + inputLine);
+                //} catch (Exception e) {
+				//	System.err.println("Unable to add: " + inputLine);
+				//	System.err.println(e.getMessage());
+                //    break;
+                //}
             }
         } catch (UnknownHostException e) {
             System.exit(1);
