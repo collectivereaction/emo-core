@@ -31,14 +31,22 @@ public class ServerThread implements Runnable {
         try {
             ServerSocket serverSocket = new ServerSocket(7777);
             Socket clientSocket = serverSocket.accept();
-					
+			System.out.println("Made it here?");
 			
 			//clientSocket.getOutputStream().write("Change Game".getBytes("UTF-8"));
 			
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String inputLine;
+			
+			BufferedWriter out = new BufferedWriter (new OutputStreamWriter(clientSocket.getOutputStream()));
+			String outputLine = "Hello World\n\r";
+			
             while (true) {
-				inputLine = in.readLine();
+				
+				out.write(outputLine);
+				System.out.println("Sending to the socket");
+				
+				/*inputLine = in.readLine();
 				
 
 				String[] gameTemp = inputLine.split(",");
@@ -58,10 +66,12 @@ public class ServerThread implements Runnable {
 					System.err.println(e.getMessage());
                     break;
                 }
+				*/
             }
         } catch (UnknownHostException e) {
             System.exit(1);
         } catch (IOException e) {
+			System.err.println(e.toString());
             System.err.println("Couldn't get I/O for the connection");
             System.exit(1);
         }

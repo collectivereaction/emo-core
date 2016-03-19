@@ -54,7 +54,7 @@ public class App
 				String P = temp[1].trim();
 				String A = temp[2].trim();
 				
-
+				/*
 				try {
 
 					table.putItem(new Item()
@@ -69,6 +69,7 @@ public class App
 					System.err.println(e.getMessage());
 					break;
 				}
+				*/
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
