@@ -22,6 +22,8 @@ public class App
 
         Table table = dynamoDB.getTable("pad-test");
 		
+		double intervalA = 0;
+		double intervalB = 0;
 		
         String hostName = "localhost";
         int portNumber = 7474;
@@ -44,7 +46,6 @@ public class App
             Socket echoSocket = new Socket(hostName, portNumber);
             BufferedReader in =
                 new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-				
 
 			
             while (true) {
@@ -54,6 +55,10 @@ public class App
 				String P = temp[1].trim();
 				String A = temp[2].trim();
 				
+				
+				CalculatorThread.appendP(P);
+				CalculatorThread.appendA(A);
+					
 				/*
 				try {
 
