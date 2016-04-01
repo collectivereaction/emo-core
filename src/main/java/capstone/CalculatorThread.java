@@ -22,15 +22,15 @@ public class CalculatorThread implements Runnable   {
 	static ArrayList<String> playerScored = new ArrayList<>();
 	static ArrayList<String> enemySpawned = new ArrayList<>();
 	
-	
+
 	Socket gameSocket;
-	String gameSessionID;
+	String sessionID;
 	
 	double nextStop = 0;
 	
 	public CalculatorThread (String str, Socket socket)
 	{
-		gameSessionID = str;
+		sessionID = str;
 		
 		gameSocket = socket;
 		
@@ -40,10 +40,10 @@ public class CalculatorThread implements Runnable   {
 
         DynamoDB dynamoDB = new DynamoDB(client);
 
-		Table gameTable = dynamoDB.getTable("game-test");
+		Table modelTable = dynamoDB.getTable("model-test");
 		final BufferedWriter out;
 		
-		//System.out.println(gameSessionID);
+		//System.out.println(sessionID);
 		//System.out.println(testStr);
 		System.out.println("Made it here?");
         try {
@@ -56,16 +56,51 @@ public class CalculatorThread implements Runnable   {
 			
 			nextStop = System.currentTimeMillis() + 5000;
             
+
+			
+			Double c_delta_degree_health = random();
+			Double c_delta_length_health = random();
+			Double c_player_damaged_health = random();
+			Double c_player_scored_health = random();
+			Double c_enemy_damaged_health = random();
+			
+			Double c_delta_degree_speed = random();
+			Double c_delta_length_speed = random();
+			Double c_player_damaged_speed = random();
+			Double c_player_scored_speed = random();
+			Double c_enemy_damaged_speed = random();
+			
+			Calculator calculateHealthChange = new Calculator(c_delta_degree_health, c_delta_length_health, c_player_damaged_health, c_player_scored_health, c_enemy_damaged_health);
+			Calculator calculateSpeedChange = new Calculator(c_delta_degree_speed, c_delta_length_speed, c_player_damaged_speed, c_player_scored_speed, c_enemy_damaged_speed);
+			
+			try {
+				modelTable.putItem(new Item()
+				.withPrimaryKey("id", sessionID)
+				.withNumber("c_delta_degree_health", c_delta_degree_health)
+				.withNumber("c_delta_length_health", c_delta_length_health)
+				.withNumber("c_player_damaged_health", c_player_damaged_health)
+				.withNumber("c_player_scored_health", c_player_scored_health)
+				.withNumber("c_enemy_damaged_health", c_player_scored_health)
+				
+				.withNumber("c_delta_degree_speed", c_delta_degree_speed)
+				.withNumber("c_delta_length_speed", c_delta_length_speed)
+				.withNumber("c_player_damaged_speed", c_player_damaged_speed)
+				.withNumber("c_player_scored_speed", c_player_scored_speed)
+				.withNumber("c_enemy_damaged_speed", c_enemy_damaged_speed)  );
+				
+            } catch (Exception e) {
+				System.err.println(e.getMessage());
+            }
+			
             while (true) {
 				
-				
-				
+
 				if (System.currentTimeMillis() > nextStop)
 				{
-					Calculator calculateHealthChange = new Calculator(random(),random(),random(),random(),random());
+					
 					Double healthChange = calculateHealthChange.calculate(pVal, aVal, playerDamaged, playerScored, enemySpawned);
 					
-					Calculator calculateSpeedChange = new Calculator(random(),random(),random(),random(),random());
+					
 					Double speedChange = calculateSpeedChange.calculate(pVal, aVal, playerDamaged, playerScored, enemySpawned);
 					
 					System.out.println("hello calculator");
@@ -85,19 +120,10 @@ public class CalculatorThread implements Runnable   {
 					System.out.println("Sending to the socket");
 				}
 
-/*
-                try {
-					gameTable.putItem(new Item()
-					.withPrimaryKey("id", gameSessionID, "time", l)
-					.withString("event", gameEvent));
-					System.out.println("PutItem succeeded: " + inputLine);
-                } catch (Exception e) {
-					System.err.println("Unable to add: " + inputLine);
-					System.err.println(e.getMessage());
-                    break;
-                }
-*/
             }
+			
+			
+				
         } catch (UnknownHostException e) {
             System.exit(1);
         } catch (IOException e) {
