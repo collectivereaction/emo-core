@@ -160,7 +160,6 @@ public class ServerThread implements Runnable   {
 					nextStop = System.currentTimeMillis();
 				}
 				*/
-/*
                 try {
 					gameTable.putItem(new Item()
 					.withPrimaryKey("id", gameSessionID, "time", l)
@@ -171,7 +170,6 @@ public class ServerThread implements Runnable   {
 					System.err.println(e.getMessage());
                     break;
                 }
-*/
             }
         } catch (UnknownHostException e) {
             System.exit(1);
