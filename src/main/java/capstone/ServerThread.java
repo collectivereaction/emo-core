@@ -144,23 +144,8 @@ public class ServerThread implements Runnable   {
 				{
 					CalculatorThread.appendPlayerScored(gameEvent);
 				}
-				else
-				{
-					CalculatorThread.appendEnemySpawned(gameEvent);
-				}
-				
-				
-				/*
-				if (System.currentTimeMillis() > nextStop)
-				{
-					System.out.println("Clearing The P, A, and Events Arrays");
-					pVal.clear();
-					aVal.clear();
-					events.clear();
-					nextStop = System.currentTimeMillis();
-				}
-				*/
-/*
+							
+
                 try {
 					gameTable.putItem(new Item()
 					.withPrimaryKey("id", gameSessionID, "time", l)
@@ -171,7 +156,7 @@ public class ServerThread implements Runnable   {
 					System.err.println(e.getMessage());
                     break;
                 }
-*/
+
             }
         } catch (UnknownHostException e) {
             System.exit(1);

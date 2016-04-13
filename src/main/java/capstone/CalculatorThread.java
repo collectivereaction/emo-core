@@ -20,7 +20,6 @@ public class CalculatorThread implements Runnable   {
 	static ArrayList<String> aVal = new ArrayList<>();
 	static ArrayList<String> playerDamaged = new ArrayList<>();
 	static ArrayList<String> playerScored = new ArrayList<>();
-	static ArrayList<String> enemySpawned = new ArrayList<>();
 	
 
 	Socket gameSocket;
@@ -58,20 +57,18 @@ public class CalculatorThread implements Runnable   {
             
 
 			
-			Double c_delta_degree_health = random();
-			Double c_delta_length_health = random();
+			Double c_delta_degree_health = 2.0*random();
+			Double c_delta_length_health = 2.0*random();
 			Double c_player_damaged_health = random();
 			Double c_player_scored_health = random();
-			Double c_enemy_damaged_health = random();
 			
-			Double c_delta_degree_speed = random();
-			Double c_delta_length_speed = random();
+			Double c_delta_degree_speed = 2.0*random();
+			Double c_delta_length_speed = 2.0*random();
 			Double c_player_damaged_speed = random();
 			Double c_player_scored_speed = random();
-			Double c_enemy_damaged_speed = random();
 			
-			Calculator calculateHealthChange = new Calculator(c_delta_degree_health, c_delta_length_health, c_player_damaged_health, c_player_scored_health, c_enemy_damaged_health);
-			Calculator calculateSpeedChange = new Calculator(c_delta_degree_speed, c_delta_length_speed, c_player_damaged_speed, c_player_scored_speed, c_enemy_damaged_speed);
+			Calculator calculateHealthChange = new Calculator(c_delta_degree_health, c_delta_length_health, c_player_damaged_health, c_player_scored_health);
+			Calculator calculateSpeedChange = new Calculator(c_delta_degree_speed, c_delta_length_speed, c_player_damaged_speed, c_player_scored_speed);
 			
 			try {
 				modelTable.putItem(new Item()
@@ -80,13 +77,11 @@ public class CalculatorThread implements Runnable   {
 				.withNumber("c_delta_length_health", c_delta_length_health)
 				.withNumber("c_player_damaged_health", c_player_damaged_health)
 				.withNumber("c_player_scored_health", c_player_scored_health)
-				.withNumber("c_enemy_damaged_health", c_player_scored_health)
 				
 				.withNumber("c_delta_degree_speed", c_delta_degree_speed)
 				.withNumber("c_delta_length_speed", c_delta_length_speed)
 				.withNumber("c_player_damaged_speed", c_player_damaged_speed)
-				.withNumber("c_player_scored_speed", c_player_scored_speed)
-				.withNumber("c_enemy_damaged_speed", c_enemy_damaged_speed)  );
+				.withNumber("c_player_scored_speed", c_player_scored_speed));
 				
             } catch (Exception e) {
 				System.err.println(e.getMessage());
@@ -98,17 +93,16 @@ public class CalculatorThread implements Runnable   {
 				if (System.currentTimeMillis() > nextStop)
 				{
 					
-					Double healthChange = calculateHealthChange.calculate(pVal, aVal, playerDamaged, playerScored, enemySpawned);
+					Double healthChange = calculateHealthChange.calculate(pVal, aVal, playerDamaged, playerScored);
 					
 					
-					Double speedChange = calculateSpeedChange.calculate(pVal, aVal, playerDamaged, playerScored, enemySpawned);
+					Double speedChange = calculateSpeedChange.calculate(pVal, aVal, playerDamaged, playerScored);
 					
 					System.out.println("hello calculator");
 					pVal.clear();
 					aVal.clear();
 					playerDamaged.clear();
 					playerScored.clear();
-					enemySpawned.clear();
 					nextStop = System.currentTimeMillis() + 5000;
 					out.flush();
 					String outputLine2 = "PS " + speedChange + "\n\r";
@@ -149,10 +143,6 @@ public class CalculatorThread implements Runnable   {
 	public static void appendPlayerScored(String str)
 	{
 		playerScored.add(str);
-	}
-	public static void appendEnemySpawned(String str)
-	{
-		enemySpawned.add(str);
 	}
 	
 	public double random()
