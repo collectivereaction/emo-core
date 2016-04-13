@@ -59,7 +59,6 @@ public class App
 				CalculatorThread.appendP(P);
 				CalculatorThread.appendA(A);
 					
-				
 				try {
 
 					table.putItem(new Item()
@@ -74,7 +73,6 @@ public class App
 					System.err.println(e.getMessage());
 					break;
 				}
-				
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);

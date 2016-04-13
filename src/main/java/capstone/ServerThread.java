@@ -144,7 +144,6 @@ public class ServerThread implements Runnable   {
 				{
 					CalculatorThread.appendPlayerScored(gameEvent);
 				}
-							
 
                 try {
 					gameTable.putItem(new Item()
