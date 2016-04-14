@@ -67,9 +67,14 @@ public class CalculatorThread implements Runnable   {
 			Double c_player_damaged_speed = random();
 			Double c_player_scored_speed = random();
 			
+			Double c_delta_degree_enemySpawnRate = 2.0*random();
+			Double c_delta_length_enemySpawnRate = 2.0*random();
+			Double c_player_damaged_enemySpawnRate = random();
+			Double c_player_scored_enemySpawnRate = random();
+			
 			Calculator calculateHealthChange = new Calculator(c_delta_degree_health, c_delta_length_health, c_player_damaged_health, c_player_scored_health);
 			Calculator calculateSpeedChange = new Calculator(c_delta_degree_speed, c_delta_length_speed, c_player_damaged_speed, c_player_scored_speed);
-			
+			Calculator calculateESRChange = new Calculator (c_delta_degree_enemySpawnRate, c_delta_length_enemySpawnRate, c_player_damaged_enemySpawnRate, c_player_scored_enemySpawnRate);
 			try {
 				modelTable.putItem(new Item()
 				.withPrimaryKey("id", sessionID)
@@ -81,7 +86,14 @@ public class CalculatorThread implements Runnable   {
 				.withNumber("c_delta_degree_speed", c_delta_degree_speed)
 				.withNumber("c_delta_length_speed", c_delta_length_speed)
 				.withNumber("c_player_damaged_speed", c_player_damaged_speed)
-				.withNumber("c_player_scored_speed", c_player_scored_speed));
+				.withNumber("c_player_scored_speed", c_player_scored_speed)
+				
+				.withNumber("c_delta_degree_enemySpawnRate", c_delta_degree_enemySpawnRate)
+				.withNumber("c_delta_length_enemySpawnRate", c_delta_length_enemySpawnRate)
+				.withNumber("c_player_damaged_enemySpawnRate", c_player_damaged_enemySpawnRate)
+				.withNumber("c_player_scored_enemySpawnRate", c_player_scored_enemySpawnRate) );
+				
+				
 				
             } catch (Exception e) {
 				System.err.println(e.getMessage());
@@ -98,6 +110,8 @@ public class CalculatorThread implements Runnable   {
 					
 					Double speedChange = calculateSpeedChange.calculate(pVal, aVal, playerDamaged, playerScored);
 					
+					Double enemySpawnRateChange = calculateESRChange.calculate(pVal, aVal, playerDamaged, playerScored);
+					
 					System.out.println("hello calculator");
 					pVal.clear();
 					aVal.clear();
@@ -107,10 +121,17 @@ public class CalculatorThread implements Runnable   {
 					out.flush();
 					String outputLine2 = "PS " + speedChange + "\n\r";
 					String outputLine1 = "PH " + healthChange + "\n\r";
+					String outputLine3 = "ESR " + enemySpawnRateChange + "\n\r";
 					out.write(outputLine1);
+					out.newLine();
 					out.flush();
 					out.write(outputLine2);
+					out.newLine();
 					out.flush();
+					out.write(outputLine3);
+					out.newLine();
+					out.flush();
+					System.out.println("\nenemySpawnRateChange :" + enemySpawnRateChange);
 					System.out.println("Sending to the socket");
 				}
 
