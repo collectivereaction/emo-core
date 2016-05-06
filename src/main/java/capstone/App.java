@@ -60,13 +60,13 @@ public class App
 				CalculatorThread.appendA(A);
 					
 				try {
-
+					/*
 					table.putItem(new Item()
 					.withPrimaryKey("session", sessionId, "timestamp", System.currentTimeMillis())
 					.withString("P", P)
 					.withString("A", A));
 					System.out.println("PutItem succeeded: " + System.currentTimeMillis() + ", " + P + ", " +  A);
-					
+					*/
 
 				} catch (Exception e) {
 					System.err.println("Unable to add: " + read);
