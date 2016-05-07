@@ -14,23 +14,23 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 
+/**
+ * This thread is started by the "App.java" class.
+ * This class takes in the game states sent by the game, starts the CalculatorThread and passes the session id and client socket instance to it 
+	to maintain one instance of the client socket.
+ * It then pushes the game states to the database with a timestamp.
+ *
+ */
+
 public class ServerThread implements Runnable   {
 	
+	//session id
 	String gameSessionID;
-	//String testStr = "---------------";
 	
-	//ArrayList<String> pVal = new ArrayList<>();
-	//ArrayList<String> aVal = new ArrayList<>();
-	//ArrayList<String> events = new ArrayList<>();
-	
-	//double nextStop = 0;
-	
+	//constructor to set the session id
 	public ServerThread (String str)
 	{
 		gameSessionID = str;
-		
-		
-		
 	}
     public void run() {
 		AmazonDynamoDBClient client = new AmazonDynamoDBClient();
@@ -40,18 +40,19 @@ public class ServerThread implements Runnable   {
 		Table gameTable = dynamoDB.getTable("game-test");
 		final BufferedWriter out;
 		
-		//System.out.println(gameSessionID);
-		//System.out.println(testStr);
-		System.out.println("Made it here?");
+		//System.out.println("Made it here?");    //Debugging
+		
         try {
-			
-			
+			//create a new instance of the ServerSocket with port number 7777
             ServerSocket serverSocket = new ServerSocket(7777);
-            Socket clientSocket = serverSocket.accept();
-			System.out.println("Made it here?");
 			
+			//Wait for the severSocket to accept the connection
+            Socket clientSocket = serverSocket.accept();
+			
+			//System.out.println("Made it here?");    //Debugging
+			
+			//initialize the calculator thread and then start it
 			CalculatorThread calculatorThreadInstance = new CalculatorThread(gameSessionID, clientSocket);
-			//serverThreadInstance.setString("Hello");
 			Thread thr = new Thread(calculatorThreadInstance);
 			thr.start();
 			
@@ -60,75 +61,11 @@ public class ServerThread implements Runnable   {
             String inputLine;
 			
 			out = new BufferedWriter (new OutputStreamWriter(clientSocket.getOutputStream()));
-			//String outputLine = "PH-\n\r";
-			
-			/*
-			JFrame main = new JFrame("Game Changes");
-			main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			main.setResizable(false);
-			main.setLayout(null);
-			main.setPreferredSize(new Dimension(220, 300));
-			main.setLocation(400, 200);
 
-			// Heading: LOGIN
-			JLabel heading = new JLabel("Game Changes");
-			heading.setBounds(80, 20, 50, 20);
-			main.add(heading);
-
-			// Label Username
-			JLabel username_label = new JLabel("Change: ");
-			username_label.setBounds(5, 70, 80, 20);
-			main.add(username_label);
-			// Textfield Username
-			final JTextField username_field = new JTextField();
-			username_field.setBounds(70, 70, 120, 20);
-			main.add(username_field);
-			//this.name = username_field.getText();
-
-			// Button Login
-			JButton loginBtn = new JButton("Send");
-			loginBtn.setBounds(40, 150, 120, 25);
-			main.add(loginBtn);
-			main.pack();
-			main.setVisible(true);
-			
-			
-			
-				loginBtn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					//name = username_field.getText();
-					//System.out.println(name); //IT WORKS
-					try {
-						out.flush();
-						String outputLine = username_field.getText() + "\n\r";
-						out.write(outputLine);
-						System.out.println("Sending to the socket");
-					}
-					catch (IOException c) {
-						System.err.println(c.toString());
-						System.err.println("cannot get String");
-						System.exit(1);
-					}	
-				}
-			});
-			
-			
-			*/
-			
-			//clientSocket.getOutputStream().write("Change Game".getBytes("UTF-8"));
-			
-			//nextStop = System.currentTimeMillis() + 5000;
-            
             while (true) {
-				//out.flush();
-				//String outputLine = username_field.getText();
-				//out.write(outputLine);
-				//System.out.println("Sending to the socket");
-				
+				//Parse the string sent by the game in to game state and timestamp
 				inputLine = in.readLine();
-				
-
+		
 				String[] gameTemp = inputLine.split(",");
 				
 				String gameTimeStamp = gameTemp[0].trim();
@@ -136,15 +73,19 @@ public class ServerThread implements Runnable   {
 				String gameEvent = gameTemp[1].trim();
 				System.out.println("PutItem succeeded: " + inputLine);
 				
+				//Append the Player damaged array in the Calculator thread
 				if (gameEvent.equals("Player Damaged"))
 				{
 					CalculatorThread.appendPlayerDamaged(gameEvent);
 				}
+				//Append the player scored array in the Calculator thread
 				else if(gameEvent.equals("Player Scored"))
 				{
 					CalculatorThread.appendPlayerScored(gameEvent);
 				}
 
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				//This section of code pushes the session id and game states with a timestamp to the game-test table in the database
                 try {
 					gameTable.putItem(new Item()
 					.withPrimaryKey("id", gameSessionID, "time", l)
@@ -155,7 +96,7 @@ public class ServerThread implements Runnable   {
 					System.err.println(e.getMessage());
                     break;
                 }
-
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
         } catch (UnknownHostException e) {
             System.exit(1);
@@ -166,21 +107,6 @@ public class ServerThread implements Runnable   {
         }
     }
 	
-	/*
-	public void setString(String str)
-	{
-		testStr = str;
-	}
-	
-	public void appendP(String str)
-	{
-		pVal.add(str);
-	}
-	
-	public void appendA(String str)
-	{
-		aVal.add(str);
-	}
-	*/
+
 	
 }
